@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rajdeep Poddar — Lead Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #0b0d14;
+    --surface:   #111420;
+    --border:    #1e2235;
+    --gold:      #c9a84c;
+    --gold-dim:  #7a6230;
+    --gold-glow: rgba(201,168,76,0.18);
+    --text:      #d8dce8;
+    --muted:     #5a5f78;
+    --accent:    #4a90d9;
+    --white:     #f0f2f8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+  }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    position: relative;
+    padding: 72px 60px 48px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0e1120 0%, #0b0d14 60%, #0d1118 100%);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.1s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 6vw, 82px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.35s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-meta a, .hero-meta span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s;
+  }
+  .hero-meta a:hover { color: var(--gold); }
+  .hero-meta a svg, .hero-meta span svg { opacity: 0.7; }
+
+  /* ── DIAGONAL ACCENT LINE ── */
+  .hero-line {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, transparent 60%);
+    opacity: 0;
+    animation: fadeIn 1s 0.9s forwards;
+  }
+
+  /* ── SUMMARY BAND ── */
+  .summary-band {
+    padding: 36px 60px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    opacity: 0;
+    animation: fadeIn 0.8s 1s forwards;
+  }
+
+  .summary-band p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+    max-width: 860px;
+    font-weight: 300;
+  }
+
+  .summary-band p strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── TABS ── */
+  .tabs-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11,13,20,0.92);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    opacity: 0;
+    animation: fadeIn 0.6s 1.2s forwards;
+  }
+
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 18px 24px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0%; height: 2px;
+    background: var(--gold);
+    transition: width 0.38s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 10px var(--gold-dim);
+  }
+
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--gold); }
+  .tab-btn.active::after { width: 100%; }
+
+  /* ── CONTENT PANELS ── */
+  .panels {
+    min-height: 70vh;
+    padding: 56px 60px 80px;
+    position: relative;
+  }
+
+  .panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  .panel.active {
+    display: block;
+    animation: panelIn 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+
+  @keyframes panelIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION HEADING ── */
+  .sec-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sec-heading::before {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── SKILLS PANEL ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .skill-pill {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: border-color 0.3s, color 0.3s, transform 0.25s;
+  }
+
+  .skill-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .skill-pill:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .skill-pill:hover::before { opacity: 1; }
+
+  .skill-category {
+    margin-bottom: 36px;
+  }
+
+  .skill-cat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* ── EXPERIENCE PANEL ── */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+  .exp-item {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    position: relative;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .exp-item:last-child { border-bottom: none; }
+
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -60px; top: 0;
+    width: 3px; height: 0%;
+    background: var(--gold);
+    transition: height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .exp-item:hover::before { height: 100%; }
+
+  .exp-meta { padding-top: 4px; }
+
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .exp-company {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .exp-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .exp-bullets li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    padding-left: 18px;
+    position: relative;
+    font-weight: 300;
+  }
+
+  .exp-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+    font-size: 10px;
+    top: 5px;
+  }
+
+  .exp-bullets li strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── ACHIEVEMENTS ── */
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .ach-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.35s, transform 0.3s, box-shadow 0.35s;
+    cursor: default;
+  }
+
+  .ach-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .ach-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px var(--gold-glow);
+  }
+
+  .ach-card:hover::before { transform: scaleX(1); }
+
+  .ach-stat {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .ach-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .ach-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-list { display: flex; flex-direction: column; gap: 28px; }
+
+  .edu-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    background: var(--surface);
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+
+  .edu-card:hover {
+    border-color: var(--gold-dim);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+
+  .edu-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold-glow);
+    border: 1px solid var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .edu-degree {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .edu-institution {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .edu-detail {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .contact-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    text-decoration: none;
+    transition: border-color 0.3s, transform 0.25s, box-shadow 0.3s;
+  }
+
+  .contact-card:hover {
+    border-color: var(--gold);
+    transform: translateX(6px);
+    box-shadow: -4px 0 20px var(--gold-glow);
+    text-decoration: none;
+  }
+
+  .contact-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--gold-glow);
+    border: 1px solid var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .contact-value {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 400;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+    margin-right: 10px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero, .summary-band, .tabs-wrapper, .panels, footer { padding-left: 24px; padding-right: 24px; }
+    .exp-item { grid-template-columns: 1fr; gap: 8px; }
+    .exp-item::before { display: none; }
+    .tabs-wrapper { gap: 0; }
+    .tab-btn { padding: 16px 14px; font-size: 10px; }
+  }
+
+  /* ── STAGGER ITEMS ── */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeUp 0.5s forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.47s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.54s; }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="hero-label">Portfolio · Data &amp; Analytics</div>
+  <h1 class="hero-name">Rajdeep <em>Poddar</em></h1>
+  <p class="hero-role">LEAD DATA ANALYST · AUTOMATION &amp; ANALYTICS SPECIALIST · STRUCTURED FINANCE</p>
+  <div class="hero-meta">
+    <a href="mailto:rajdeeppoddar15@gmail.com">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+      rajdeeppoddar15@gmail.com
+    </a>
+    <a href="tel:+917980272795">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.43 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91A16 16 0 0 0 15 15.91l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      +91 79802 72795
+    </a>
+    <a href="https://linkedin.com/in/rajdeep-poddar-90a08a183" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      linkedin.com/in/rajdeep-poddar
+    </a>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Kolkata, India
+    </span>
+  </div>
+  <div class="hero-line"></div>
+</header>
+
+<!-- ── SUMMARY ── -->
+<section class="summary-band">
+  <p>Innovative Lead Data Analyst with <strong>over 6 years of experience</strong> delivering robust automation and data solutions within the <strong>Structured Finance</strong> domain. Proven track record of driving <strong>40% to 70% efficiency gains</strong> through Python, C# (.NET), and API-driven tooling. Adept at bridging technical delivery with stakeholder needs, optimizing ETL workflows, and building scalable solutions that streamline complex financial data processes.</p>
+</section>
+
+<!-- ── TABS ── -->
+<nav class="tabs-wrapper" id="tabs">
+  <button class="tab-btn active" data-tab="experience">Experience</button>
+  <button class="tab-btn" data-tab="skills">Skills</button>
+  <button class="tab-btn" data-tab="achievements">Achievements</button>
+  <button class="tab-btn" data-tab="education">Education</button>
+  <button class="tab-btn" data-tab="contact">Contact</button>
+</nav>
+
+<!-- ── PANELS ── -->
+<main class="panels">
+
+  <!-- EXPERIENCE -->
+  <div class="panel active stagger" id="panel-experience">
+    <h2 class="sec-heading">Experience</h2>
+    <div class="exp-list">
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Apr 2024 — Present</div>
+          <div class="exp-company">ICRA Analytics · Kolkata</div>
+        </div>
+        <div>
+          <div class="exp-title">Lead Associate Data Analyst</div>
+          <ul class="exp-bullets">
+            <li>Mentored and onboarded new team members through a structured onboarding process, championing process adoption and conducting rigorous peer reviews.</li>
+            <li>Collected and analyzed business requirements from stakeholders to design custom dashboards, data models, and optimized ETL processes.</li>
+            <li>Architected cross-application API integrations and robust automation tools to streamline complex data processing workflows.</li>
+            <li>Improved individual analyst efficiency by <strong>40%</strong> by developing .NET Framework automation tools to process and restructure complex JSON outputs.</li>
+            <li>Reduced delivery time for templated work by <strong>70%</strong> by engineering a Python code-generation automation tool to produce boilerplate code on demand.</li>
+            <li>Ensured uninterrupted data flow by architecting a <strong>self-healing smart ETL pipeline</strong> to autonomously diagnose and resolve extraction errors in real-time.</li>
+            <li>Eliminated manual effort previously required for config migrations by building a <strong>bi-directional API integration</strong> enabling seamless database communication.</li>
+            <li>Drastically improved audit transparency by delivering a <strong>FastAPI-based audit trail reporting tool</strong> enabling stakeholders to query data via Swagger UI/Postman.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Apr 2022 — Mar 2024</div>
+          <div class="exp-company">ICRA Analytics · Kolkata</div>
+        </div>
+        <div>
+          <div class="exp-title">Senior Associate Data Analyst</div>
+          <ul class="exp-bullets">
+            <li>Collaborated closely with product development teams to capture and document business requirements in Confluence.</li>
+            <li>Participated in design reviews, contributing to the strategic allocation of functionality across system components.</li>
+            <li>Identified gaps in existing workflows and designed custom <strong>data validation frameworks</strong> to standardize quality assurance protocols.</li>
+            <li>Streamlined data handling by engineering scalable <strong>C# solutions</strong> to manage and process data from multiple clients.</li>
+            <li>Played a key role in developing an issuer solution application for Warehouse Lenders integrating multi-system data into a unified portfolio tracking dashboard.</li>
+            <li>Implemented targeted automation solutions to resolve workflow bottlenecks, improving overall project delivery speed.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Jun 2019 — Mar 2022</div>
+          <div class="exp-company">ICRA Analytics · Kolkata</div>
+        </div>
+        <div>
+          <div class="exp-title">Associate Data Analyst</div>
+          <ul class="exp-bullets">
+            <li>Engaged proactively with major clients to thoroughly understand requirements, facilitating clear communication across multiple teams.</li>
+            <li>Consolidated complex datasets from disparate sources into unified reports utilizing advanced data cleaning techniques.</li>
+            <li>Achieved a <strong>95% increase</strong> in data processing speed and accuracy by spearheading the automation of data ingestion processes for tier-1 financial clients.</li>
+            <li>Engineered an <strong>ETL pipeline</strong> to process and integrate data for over <strong>1,000 financial deals</strong>.</li>
+            <li>Designed a streamlined ETL process consolidating data from over <strong>100 facilities</strong> into the client's core application.</li>
+            <li>Developed automated extraction scripts to efficiently process data from various PDFs and Excel files.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="panel" id="panel-skills">
+    <h2 class="sec-heading">Skills</h2>
+
+    <div class="skill-category stagger">
+      <div class="skill-cat-label">Languages &amp; Frameworks</div>
+      <div class="skills-grid">
+        <div class="skill-pill">Python</div>
+        <div class="skill-pill">C# (.NET)</div>
+        <div class="skill-pill">FastAPI</div>
+        <div class="skill-pill">RESTful API</div>
+      </div>
+    </div>
+
+    <div class="skill-category stagger">
+      <div class="skill-cat-label">Data &amp; Infrastructure</div>
+      <div class="skills-grid">
+        <div class="skill-pill">PostgreSQL</div>
+        <div class="skill-pill">ETL Pipeline Architecture</div>
+        <div class="skill-pill">Process Automation</div>
+        <div class="skill-pill">Data Modeling</div>
+      </div>
+    </div>
+
+    <div class="skill-category stagger">
+      <div class="skill-cat-label">Analytics &amp; BI</div>
+      <div class="skills-grid">
+        <div class="skill-pill">Sisense</div>
+        <div class="skill-pill">Dashboard Design</div>
+        <div class="skill-pill">Structured Finance</div>
+        <div class="skill-pill">Data Validation</div>
+      </div>
+    </div>
+
+    <div class="skill-category stagger">
+      <div class="skill-cat-label">AI &amp; Emerging Tech</div>
+      <div class="skills-grid">
+        <div class="skill-pill">Gen AI / LLM Tooling</div>
+        <div class="skill-pill">Ollama</div>
+        <div class="skill-pill">Self-Healing Pipelines</div>
+      </div>
+    </div>
+
+    <div class="skill-category stagger">
+      <div class="skill-cat-label">Tools &amp; Workflow</div>
+      <div class="skills-grid">
+        <div class="skill-pill">Postman</div>
+        <div class="skill-pill">Confluence</div>
+        <div class="skill-pill">Agile / Scrum</div>
+        <div class="skill-pill">Swagger UI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="panel" id="panel-achievements">
+    <h2 class="sec-heading">Key Achievements</h2>
+    <div class="ach-grid stagger">
+
+      <div class="ach-card">
+        <div class="ach-stat">70%</div>
+        <div class="ach-desc">Reduced delivery time for templated work by engineering a Python code-generation tool that produces boilerplate code on demand.</div>
+        <div class="ach-tag">Delivery Optimization · Python</div>
+      </div>
+
+      <div class="ach-card">
+        <div class="ach-stat">40%</div>
+        <div class="ach-desc">Improved individual analyst efficiency by developing .NET Framework automation tools to process and restructure complex JSON outputs.</div>
+        <div class="ach-tag">Efficiency · .NET Automation</div>
+      </div>
+
+      <div class="ach-card">
+        <div class="ach-stat">95%</div>
+        <div class="ach-desc">Increase in data processing speed and accuracy by automating data ingestion workflows for tier-1 financial clients.</div>
+        <div class="ach-tag">Performance · Data Ingestion</div>
+      </div>
+
+      <div class="ach-card">
+        <div class="ach-stat">1000+</div>
+        <div class="ach-desc">Financial deals processed and integrated through a purpose-built ETL pipeline serving complex structured finance use cases.</div>
+        <div class="ach-tag">Scale · ETL Pipeline</div>
+      </div>
+
+      <div class="ach-card">
+        <div class="ach-stat">100+</div>
+        <div class="ach-desc">Facilities consolidated into a client's core application through a streamlined ETL process enhancing data integration and accessibility.</div>
+        <div class="ach-tag">Integration · Structured Finance</div>
+      </div>
+
+      <div class="ach-card">
+        <div class="ach-stat">∞</div>
+        <div class="ach-desc">Zero manual intervention for config migrations — achieved via a bi-directional API integration enabling seamless database communication.</div>
+        <div class="ach-tag">Automation · API Engineering</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="panel" id="panel-education">
+    <h2 class="sec-heading">Education &amp; Certifications</h2>
+    <div class="edu-list stagger">
+
+      <div class="edu-card">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <div class="edu-degree">Bachelor of Computer Applications (BCA)</div>
+          <div class="edu-institution">Techno India Institute of Technology (MAKAUT) · 2019</div>
+          <div class="edu-detail">Kolkata, India &nbsp;·&nbsp; CGPA: 8.2</div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-icon">📊</div>
+        <div>
+          <div class="edu-degree">Data Science Program Certification</div>
+          <div class="edu-institution">BSE Institute · 2020</div>
+          <div class="edu-detail">Completed post-graduation certification in Data Science, covering statistical modeling, ML foundations, and applied analytics.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="panel" id="panel-contact">
+    <h2 class="sec-heading">Get in Touch</h2>
+    <div class="contact-grid stagger">
+
+      <a href="mailto:rajdeeppoddar15@gmail.com" class="contact-card">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">rajdeeppoddar15@gmail.com</div>
+        </div>
+      </a>
+
+      <a href="tel:+917980272795" class="contact-card">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.43 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91A16 16 0 0 0 15 15.91l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-value">+91 79802 72795</div>
+        </div>
+      </a>
+
+      <a href="https://linkedin.com/in/rajdeep-poddar-90a08a183" target="_blank" class="contact-card">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">LinkedIn</div>
+          <div class="contact-value">rajdeep-poddar-90a08a183</div>
+        </div>
+      </a>
+
+      <div class="contact-card" style="cursor:default;">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Location</div>
+          <div class="contact-value">Kolkata, West Bengal, India</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p><span class="footer-dot"></span>Rajdeep Poddar · Lead Data Analyst · ICRA Analytics</p>
+  <p style="font-size:10px;">6+ years · Structured Finance · Python · C# · FastAPI · PostgreSQL</p>
+</footer>
+
+<script>
+  // ── TAB SWITCHING ──
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      // Deactivate all
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+      });
+
+      // Activate clicked
+      btn.classList.add('active');
+      const panel = document.getElementById('panel-' + target);
+      panel.style.display = 'block';
+
+      // Restart stagger animation
+      const stagger = panel.querySelector('.stagger');
+      if (stagger) {
+        const children = stagger.children;
+        Array.from(children).forEach(c => {
+          c.style.animation = 'none';
+          c.offsetHeight; // reflow
+          c.style.animation = '';
+        });
+      }
+
+      // Trigger panel animation
+      requestAnimationFrame(() => {
+        panel.classList.add('active');
+      });
+
+      // Scroll to tabs
+      document.getElementById('tabs').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+
+  // Initialize display
+  panels.forEach((p, i) => {
+    if (i !== 0) p.style.display = 'none';
+  });
+</script>
+</body>
+</html>
